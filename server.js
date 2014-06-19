@@ -1,10 +1,13 @@
 var	express = require('express'),
 	mongoose	= require('mongoose'),
-	reports = require('./routes/lostandfound/reports');
+	reports = require('./routes/lostandfound/reports'),
+	params = require('express-params');
 	//Report = require('./models/Report');
 	//users 	= require('./routes/lostandfound/users');
 
 var app = express();
+
+params.extend(app);
 
 app.configure(function(){
   app.use(express.bodyParser());
@@ -24,14 +27,15 @@ mongoose.connect('mongodb://localhost/pawhub');
 //***************************************************
 
 /********************REPORTS*********************/
-var reportsRegExp = /^\/reports(\/(lost|found|resque|abuse))*(\/page\/(\d))*(\/per_page\/(\d))*\/*$/;
+var reportsRegExp = /^\/lnf\/reports(\/(lost|found|resque|abuse))*(\/page\/(\d))*(\/per_page\/(\d))*\/*$/;
+var idRegExp =/^\/[0-9a-fA-F]{24}$/;
+app.param('i',idRegExp);
 
 app.get(reportsRegExp, reports.findPaged);
-app.get("/reports/:id", reports.findById);
-
-app.post("/reports/", reports.add);
-app.put("/reports", reports.update);
-app.delete("/reports/:id", reports.delete);
+app.get("/lnf/reports/:id", reports.findById);
+app.post("/lnf/reports/", reports.add);
+app.put("/lnf/reports", reports.update);
+app.delete("/lnf/reports/:id", reports.delete);
 
 
 //***************************************************

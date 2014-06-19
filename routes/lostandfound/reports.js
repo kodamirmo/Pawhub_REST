@@ -3,13 +3,13 @@ var	mongoose 	= require('mongoose');
 var Report = require('../../models/Report');
 
 exports.findPaged = function(req,res){
-	var filter = { type : req.params[1]};
+	var filter = req.params[1]?{ type : req.params[1]}:{};
 	var page ={
 		skip:req.params[3]?Number(req.params[3]):0,
 		limit:req.params[5]?Number(req.params[5]):20
 	};
 	Report.find(filter,{},page,function(err, reports){
-		res.send(reports);	
+		res.send(reports);
 		//populateReports();
 	});
 };
