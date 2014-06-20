@@ -2,7 +2,7 @@ var	mongoose 	= require('mongoose'),
 	Schema 		= mongoose.Schema;
  
 var foundSchema = new Schema({
-	_t	: {type:String, default: "abuse"},
+	_t	: {type:String, default: "found"},
     breeds : [Number],
     size : String
 });
