@@ -33,7 +33,7 @@ app.param('i',idRegExp);
 
 app.get(reportsRegExp, reports.findPaged);
 app.get("/lnf/reports/:id", reports.findById);
-app.post("/lnf/reports/", reports.add);
+app.post("/lnf/reports", reports.add);
 app.put("/lnf/reports", reports.update);
 app.delete("/lnf/reports/:id", reports.delete);
 

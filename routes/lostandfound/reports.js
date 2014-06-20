@@ -1,6 +1,7 @@
 var ObjectID = require("mongodb").ObjectID
 var	mongoose 	= require('mongoose');
 var Report = require('../../models/Report');
+var extend = require('deep-extend');
 
 exports.findPaged = function(req,res){
 	var filter = req.params[1]?{ type : req.params[1]}:{};
@@ -39,14 +40,22 @@ exports.add = function(req,res){
 };
 
 exports.update = function(req,res){
-	Report.findByIdAndUpdate(req.body._id, req.body, function(err,report,numberAffected){
-			if(err){
-				res.send({"err":err});
-			}else{
-				res.send(numberAffected);
-			}
+	//Validation
+	if(!Report.isValidDetail(req.body.detail)){
+		res.send(404,"Invalid Detail");
+	}
+	Report.findOne(req.body._id,function(err,doc){
+		if(doc){
+			extend(doc,req.body);
+			doc.save(function(err,report,numberAffected){
+				if(err){
+					res.send({"err":err});
+				}else{
+					res.send(report);
+				}
+			});
 		}
-	);
+	});
 };
 
 exports.delete = function(req,res){
