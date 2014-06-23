@@ -28,8 +28,8 @@ mongoose.connect('mongodb://localhost/pawhub');
 
 /********************REPORTS*********************/
 var reportsRegExp = /^\/lnf\/reports(\/(lost|found|resque|abuse))*(\/page\/(\d))*(\/per_page\/(\d))*\/*$/;
-var idRegExp =/^\/[0-9a-fA-F]{24}$/;
-app.param('i',idRegExp);
+var idRegExp =/[0-9a-fA-F]{24}$/;
+app.param('id',idRegExp);
 
 app.get(reportsRegExp, reports.findPaged);
 app.get("/lnf/reports/:id", reports.findById);
@@ -37,7 +37,7 @@ app.post("/lnf/reports", reports.add);
 app.put("/lnf/reports", reports.update);
 app.delete("/lnf/reports/:id", reports.delete);
 
-
+app.post("/lnf/reports/setalert/:id", reports.setAlert);
 //***************************************************
 //RUN APP
 //***************************************************

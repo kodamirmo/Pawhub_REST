@@ -25,7 +25,7 @@ var reportSchema = new Schema({
     location : Schema.Types.Mixed,
     linkedTo : [Number],
     viewedBy : [String],
-    alertTo : [String],
+    alertTo : [{type:Schema.ObjectId, ref:'User'}],
     comments : [Schema.Types.Mixed],
 	detail : Schema.Types.Mixed
 });

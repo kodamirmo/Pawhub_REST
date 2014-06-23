@@ -1,6 +1,7 @@
 var ObjectID = require("mongodb").ObjectID
 var	mongoose 	= require('mongoose');
 var Report = require('../../models/Report');
+var UserAlert = require('../../models/UserAlert');
 var extend = require('deep-extend');
 
 exports.findPaged = function(req,res){
@@ -67,6 +68,32 @@ exports.delete = function(req,res){
 			}
 		}
 	);
+};
+
+
+exports.setAlert = function(req,res){
+	var _id = req.params.id;
+	var userAlert = req.body;
+	console.log(_id);
+	console.log(userAlert);
+	Report.findOne(req.body._id,function(err,doc){
+		if(doc){
+			if(userAlert.alert){
+				doc.alertTo.addToSet(userAlert._userId);
+			}else{
+				doc.alertTo.remove(userAlert._userId);
+			}
+			doc.save(function(err,report,numberAffected){
+				if(err){
+					console.info(err);
+					res.send({"err":err});
+				}else{
+					console.info(report);
+					res.send(report);
+				}
+			});
+		}
+	});
 };
 
 function populateReports() {
