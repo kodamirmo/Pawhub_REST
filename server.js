@@ -43,3 +43,4 @@ app.post("/lnf/reports/setalert/:id", reports.setAlert);
 //***************************************************
 app.listen(3005);
 console.log('Server running at http://127.0.0.1:3005/');
+console.log('');

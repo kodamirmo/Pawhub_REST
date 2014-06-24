@@ -1,8 +1,8 @@
-var ObjectID = require("mongodb").ObjectID
 var	mongoose 	= require('mongoose');
-var Report = require('../../models/Report');
-var UserAlert = require('../../models/UserAlert');
-var extend = require('deep-extend');
+var ObjectId	= require('objectid');
+var Report 		= require('../../models/Report');
+var UserAlert 	= require('../../models/UserAlert');
+var extend 		= require('deep-extend');
 
 exports.findPaged = function(req,res){
 	var filter = req.params[1]?{ type : req.params[1]}:{};
@@ -17,16 +17,15 @@ exports.findPaged = function(req,res){
 };
 
 exports.findById = function(req,res){
-	var id = req.params.id;
+	var _id = req.params.id;
 	var pageNumber = req.params.page;
-	var checkObjecId = new RegExp("^[0-9a-fA-F]{24}$")
-	if(checkObjecId.test(id)){
-		Report.findOne({_id:id}, function(err, reports){
-			res.send(reports);
-		});
-	}else{
-		res.send(400);
+
+	if(!ObjectId.isValid(_id)){
+		res.send(400,'invalid ID');
 	}
+	Report.findOne({'_id':_id}, function(err, reports){
+		res.send(reports);
+	});
 };
 
 exports.add = function(req,res){
@@ -41,11 +40,15 @@ exports.add = function(req,res){
 };
 
 exports.update = function(req,res){
+	var _id = req.params.id;
+	if(!ObjectId.isValid(_id)){
+		res.send(400,'Invalida ID');
+	}
 	//Validation
 	if(!Report.isValidDetail(req.body.detail)){
 		res.send(404,"Invalid Detail");
 	}
-	Report.findOne(req.body._id,function(err,doc){
+	Report.findOne(_id,function(err,doc){
 		if(doc){
 			extend(doc,req.body);
 			doc.save(function(err,report,numberAffected){
@@ -60,7 +63,11 @@ exports.update = function(req,res){
 };
 
 exports.delete = function(req,res){
-	Report.findByIdAndUpdate(req.body._id, function(err,report,numberAffected){
+	var _id = req.params.id;
+	if(!ObjectId.isValid(_id)){
+		res.send(400);
+	}
+	Report.findByIdAndUpdate(_id, function(err,report,numberAffected){
 			if(err){
 				res.send({"err":err});
 			}else{
@@ -73,27 +80,29 @@ exports.delete = function(req,res){
 
 exports.setAlert = function(req,res){
 	var _id = req.params.id;
-	var userAlert = req.body;
-	console.log(_id);
-	console.log(userAlert);
-	Report.findOne(req.body._id,function(err,doc){
-		if(doc){
-			if(userAlert.alert){
-				doc.alertTo.addToSet(userAlert._userId);
-			}else{
-				doc.alertTo.remove(userAlert._userId);
-			}
-			doc.save(function(err,report,numberAffected){
-				if(err){
-					console.info(err);
-					res.send({"err":err});
-				}else{
-					console.info(report);
-					res.send(report);
-				}
-			});
+	var userAlert = new UserAlert(req.body).validate(function(err){
+		if(err){
+			res.send({"err":err});
+			return;
 		}
-	});
+
+		Report.findOne(_id,function(err,doc){
+			if(doc){
+				if(userAlert.alert){
+					doc.alertTo.addToSet(userAlert._userId);
+				}else{
+					doc.alertTo.remove(userAlert._userId);
+				}
+				doc.save(function(err,report,numberAffected){
+					if(err){
+						res.send({"err":err});
+					}else{
+						res.send(report);
+					}
+				});
+			}
+		});
+	});	
 };
 
 function populateReports() {
