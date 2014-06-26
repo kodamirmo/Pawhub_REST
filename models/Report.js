@@ -12,22 +12,22 @@ typeValidator = [function (val){
 
 //*************Schema definition*****************
 var reportSchema = new Schema({
-    _userId : Schema.Types.ObjectId,        
-    userName : String,
-    kind : Number,
+    _userId : {type:Schema.ObjectId, required:true},
+    userName : {type:String , required:true},
+    kind : {type:Number , required:true},
     type : { type:String, validate:typeValidator },
     description : String,
     reportCode : String,
     sharedCount : Number,
     solved : Boolean,
     picture : String,
-    date : {type:Date, default: Date.now},
+    date : {type:Date, default: Date.now, required:true},
     location : Schema.Types.Mixed,
     linkedTo : [Number],
     viewedBy : [String],
     alertTo : [{type:Schema.ObjectId, ref:'User'}],
     comments : [Schema.Types.Mixed],
-	detail : Schema.Types.Mixed
+	detail : {type:Schema.Types.Mixed , required:true}
 });
 
 module.exports = mongoose.model('Report', reportSchema);
@@ -39,3 +39,8 @@ module.exports.isValidDetail = function (detail){
         return false;
     }
 }
+
+reportSchema.pre('save', function (next) {
+    console.log('EXECUTING PRE-SAVE');
+    next();
+});

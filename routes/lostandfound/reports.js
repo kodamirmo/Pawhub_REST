@@ -4,19 +4,17 @@ var Report 		= require('../../models/Report');
 var UserAlert 	= require('../../models/UserAlert');
 var extend 		= require('deep-extend');
 
-exports.findPaged = function(req,res){
+module.exports.findPaged = function(req,res){
 	var filter = req.params[1]?{ type : req.params[1]}:{};
-	var page ={
-		skip:req.params[3]?Number(req.params[3]):0,
-		limit:req.params[5]?Number(req.params[5]):20
-	};
-	Report.find(filter,{},page,function(err, reports){
-		res.send(reports);
-		//populateReports();
+	var page = req.params[3];
+	var perpage = req.params[5];
+
+	Report.findPaged(filter,page,perpage,function(err, result){
+		res.send(result);
 	});
 };
 
-exports.findById = function(req,res){
+module.exports.findById = function(req,res){
 	var _id = req.params.id;
 	var pageNumber = req.params.page;
 
@@ -28,7 +26,9 @@ exports.findById = function(req,res){
 	});
 };
 
-exports.add = function(req,res){
+module.exports.add = function(req,res){
+	//overrides the date and use the default
+	req.body.date = new Date();
 	var report = new Report(req.body).save(function(err,report,numberAffected){
 			if(err){
 				res.send({"err":err});
@@ -39,7 +39,7 @@ exports.add = function(req,res){
 	);
 };
 
-exports.update = function(req,res){
+module.exports.update = function(req,res){
 	var _id = req.params.id;
 	if(!ObjectId.isValid(_id)){
 		res.send(400,'Invalida ID');
@@ -62,7 +62,7 @@ exports.update = function(req,res){
 	});
 };
 
-exports.delete = function(req,res){
+module.exports.delete = function(req,res){
 	var _id = req.params.id;
 	if(!ObjectId.isValid(_id)){
 		res.send(400);
@@ -78,7 +78,7 @@ exports.delete = function(req,res){
 };
 
 
-exports.setAlert = function(req,res){
+module.exports.setAlert = function(req,res){
 	var _id = req.params.id;
 	var userAlert = new UserAlert(req.body).validate(function(err){
 		if(err){

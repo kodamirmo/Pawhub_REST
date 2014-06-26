@@ -1,7 +1,8 @@
 var	express = require('express'),
 	mongoose	= require('mongoose'),
 	reports = require('./routes/lostandfound/reports'),
-	params = require('express-params');
+	params = require('express-params'),
+	modelExtension = require('./utilities/model-extensions');
 	//Report = require('./models/Report');
 	//users 	= require('./routes/lostandfound/users');
 
