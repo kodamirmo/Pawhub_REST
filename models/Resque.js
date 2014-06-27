@@ -3,7 +3,7 @@ var	mongoose 	= require('mongoose'),
     ContactInfo = require('./ContactInfo');
  
 var resqueSchema = new Schema({
-	_t	: {type:String, default: "resque"},
+	_t	: {type:String, default: "resque", requied:true},
     contactInfo : [ContactInfo]
 });
 

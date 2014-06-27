@@ -41,6 +41,6 @@ module.exports.isValidDetail = function (detail){
 }
 
 reportSchema.pre('save', function (next) {
-    console.log('EXECUTING PRE-SAVE');
+    //if (this.isValidDetail(this.detail))
     next();
 });

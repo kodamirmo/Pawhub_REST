@@ -3,7 +3,7 @@ var	mongoose 	= require('mongoose'),
     ContactInfo = require('./ContactInfo');
  
 var lostSchema = new Schema({
-	_t	: {type:String, default: "lost"},
+	_t	: {type:String, default: "lost", requied:true},
     reward : Boolean,
     size : String,
     contactInfo : [ContactInfo],
