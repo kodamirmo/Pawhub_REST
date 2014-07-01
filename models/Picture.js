@@ -1,7 +1,7 @@
 var	mongoose 	= require('mongoose'),
 	Schema 		= mongoose.Schema;
  
-var multilingualContentSchema = new Schema({
+var pictureSchema = new Schema({
     _referenceId : String,
     date : Date,
     path : String,
@@ -14,4 +14,4 @@ var multilingualContentSchema = new Schema({
 //  reports = 	2,
 //  users = 	3 
 
-module.exports = mongoose.model('MultilingualContent', multilingualContentSchema);
+module.exports = mongoose.model('PictureSchema', pictureSchema);

@@ -3,7 +3,14 @@ var	express = require('express'),
 	reports = require('./routes/lostandfound/reports'),
 	users = require('./routes/users'),
 	params = require('express-params'),
-	modelExtension = require('./utilities/model-extensions');
+	modelExtension = require('./utilities/model-extensions'),
+	passport = require('passport'),
+	DigestStrategy = require('passport-http').DigestStrategy,
+	login = require('./routes/login'),
+	breeds = require('./routes/breeds'),
+	kinds = require('./routes/kinds'),
+	pushdevices = require('./routes/pushdevices'),
+	signup = require('./routes/signup');
 	//Report = require('./models/Report');
 	//users 	= require('./routes/lostandfound/users');
 
@@ -12,10 +19,13 @@ var app = express();
 params.extend(app);
 
 app.configure(function(){
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.logger('dev')); // default, short, tiny, dev 
+	app.use(express.cookieParser());
+	app.use(express.bodyParser());
+	app.use(express.methodOverride());  
+	app.use(express.logger('dev')); // default, short, tiny, dev
+	app.use(passport.initialize());
+	app.use(passport.session()); 
+	app.use(app.router);
 });
 
 //***************************************************
@@ -23,6 +33,12 @@ app.configure(function(){
 //***************************************************
 mongoose.connect('mongodb://localhost/pawhub');
 
+//*******************LOGIN************************
+//Passport Authentication configuration
+passport.use(new DigestStrategy({ qop: 'auth' }, login.digest, login.digestFailed));
+
+//Passport routing
+app.get('/login', passport.authenticate('digest', { session: false }), login.me);
 
 //***************************************************
 //routes definition
@@ -30,6 +46,13 @@ mongoose.connect('mongodb://localhost/pawhub');
 
 var idRegExp =/[0-9a-fA-F]{24}$/;
 app.param('id',idRegExp);
+
+/********************SIGN IN*********************/
+app.get("/basicusers",signup.findPaged);
+app.get("/basicusers/:id",signup.findById);
+app.post("/signup",signup.add);
+app.put("/basicusers/:id",signup.update);
+app.delete("/basicusers/:id",signup.delete);
 
 /********************REPORTS*********************/
 //This regexp accepts: /lnf/reports{/lost}{/user/522e8aaf18f9bf1f64555555}{/page/5}{/per_page/10}
@@ -45,6 +68,22 @@ app.post("/lnf/reports/setalert/:id", reports.setAlert);
 app.post("/lnf/reports/comment/:id", reports.comment);
 app.post("/lnf/reports/setviewed/:id", reports.setViewed);
 
+
+/********************BREEDS*********************/
+app.get("/breeds",breeds.findPaged);
+app.get("/breeds/:id",breeds.findById);
+app.post("/breeds",breeds.add);
+app.put("/breeds/:id",breeds.update);
+app.delete("/breeds/:id",breeds.delete);
+
+
+/********************KINDS*********************/
+app.get("/kinds",kinds.findPaged);
+app.get("/kinds/:id",kinds.findById);
+app.post("/kinds",kinds.add);
+app.put("/kinds/:id",kinds.update);
+app.delete("/kinds/:id",kinds.delete);
+
 /********************USERS*********************/
 //This regexp accepts: /lnf/reports{/lost}{/user/522e8aaf18f9bf1f64555555}{/page/5}{/per_page/10}
 var usersRegExp = /^\/users(\/page\/([0-9]{1,3}))*(\/per_page\/([0-9]{1,3}))*\/*$/;
@@ -52,8 +91,12 @@ var usersRegExp = /^\/users(\/page\/([0-9]{1,3}))*(\/per_page\/([0-9]{1,3}))*\/*
 app.get(usersRegExp, users.findPaged);
 app.get("/users/:id", users.findById);
 app.post("/users", users.add);
-app.put("/users", users.update);
+app.put("/users/:id", users.update);
 app.delete("/users/:id", users.delete);
+
+/********************BREEDS*********************/
+app.get("/pushdevices",pushdevices.findPaged);
+app.post("/pushdevices",pushdevices.add);
 
 //***************************************************
 //RUN APP

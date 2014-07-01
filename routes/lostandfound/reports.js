@@ -8,6 +8,7 @@ var Comment		= require('../../models/Comment');
 var reportKinds = ["abuse","found","lost","resque"];
 
 module.exports.findPaged = function(req,res){
+	console.log("checkpoint");
 	var filter = {};
 	if(req.params[3]){filter._userId = req.params[3];}
 	if(req.params[1]){filter.kind = reportKinds.indexOf(req.params[1]);}
@@ -64,17 +65,15 @@ module.exports.update = function(req,res){
 
 module.exports.delete = function(req,res){
 	var _id = req.params.id;
-
-	Report.findByIdAndUpdate(_id, function(err,report,numberAffected){
+	BasicUser.findOneAndRemove(_id, function(err,doc){
 			if(err){
 				res.send({"err":err});
 			}else{
-				res.send(numberAffected);
+				res.send(doc);
 			}
 		}
 	);
 };
-
 
 module.exports.setAlert = function(req,res){
 	var _id = req.params.id;

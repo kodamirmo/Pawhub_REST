@@ -1,12 +1,13 @@
 var	mongoose 	= require('mongoose'),
-	Schema 		= mongoose.Schema;
- 
+	Schema 		= mongoose.Schema,
+	validator	= require('mongoose-validator');
+
 var basicUserSchema = new Schema({
-    userName : String,
+    userName : {type:String, unique:true, required:true},
     userLastName : String,
-    userEmail : String,
+    userEmail : {type:String, unique:true, required:true, validate:[validator.validate('isEmail')]},
     userCity : String,
-    date : Date
+    date : {type:Date, default: Date.now, required:true}
 });
 
 module.exports = mongoose.model('BasicUser', basicUserSchema);

@@ -3,7 +3,9 @@ var	mongoose 	= require('mongoose'),
  
 var multilingualContentSchema = new Schema({
     culture : String,
-    content : String
+    content : String,
+    _id: false
 });
 
 module.exports = mongoose.model('MultilingualContent', multilingualContentSchema);
+module.exports.Schema = multilingualContentSchema;
