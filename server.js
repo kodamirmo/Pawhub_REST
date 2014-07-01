@@ -10,7 +10,8 @@ var	express = require('express'),
 	breeds = require('./routes/breeds'),
 	kinds = require('./routes/kinds'),
 	pushdevices = require('./routes/pushdevices'),
-	signup = require('./routes/signup');
+	signup = require('./routes/signup'),
+	pictures = require('./routes/pictures');
 	//Report = require('./models/Report');
 	//users 	= require('./routes/lostandfound/users');
 
@@ -20,7 +21,7 @@ params.extend(app);
 
 app.configure(function(){
 	app.use(express.cookieParser());
-	app.use(express.bodyParser());
+	app.use(express.bodyParser({ keepExtensions: true, uploadDir: "uploads" }));
 	app.use(express.methodOverride());  
 	app.use(express.logger('dev')); // default, short, tiny, dev
 	app.use(passport.initialize());
@@ -76,7 +77,6 @@ app.post("/breeds",breeds.add);
 app.put("/breeds/:id",breeds.update);
 app.delete("/breeds/:id",breeds.delete);
 
-
 /********************KINDS*********************/
 app.get("/kinds",kinds.findPaged);
 app.get("/kinds/:id",kinds.findById);
@@ -97,6 +97,11 @@ app.delete("/users/:id", users.delete);
 /********************BREEDS*********************/
 app.get("/pushdevices",pushdevices.findPaged);
 app.post("/pushdevices",pushdevices.add);
+
+/********************PICTURES*********************/
+app.get("/pics/:type",pictures.findPaged);
+app.get("/pics/:type/:id",pictures.get);
+app.post("/pics/:type", pictures.uploadFile);
 
 //***************************************************
 //RUN APP
