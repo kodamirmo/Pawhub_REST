@@ -99,8 +99,9 @@ app.get("/pushdevices",pushdevices.findPaged);
 app.post("/pushdevices",pushdevices.add);
 
 /********************PICTURES*********************/
-app.get("/pics/:type",pictures.findPaged);
-app.get("/pics/:type/:id",pictures.get);
+var picsRegExp = /^\/pics(\/(albums|pets|reports|users))*(\/page\/([0-9]{1,3}))*(\/per_page\/([0-9]{1,3}))*\/*$/;
+app.get(picsRegExp, pictures.findPaged);
+app.get("/pics/:id",pictures.get);
 app.post("/pics/:type", pictures.uploadFile);
 
 //***************************************************
