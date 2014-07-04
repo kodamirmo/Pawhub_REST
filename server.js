@@ -21,7 +21,7 @@ params.extend(app);
 
 app.configure(function(){
 	app.use(express.cookieParser());
-	app.use(express.bodyParser({ keepExtensions: true, uploadDir: "uploads" }));
+	app.use(express.bodyParser({ keepExtensions: true, uploadDir: "uploads", limit:'3mb'}));
 	app.use(express.methodOverride());  
 	app.use(express.logger('dev')); // default, short, tiny, dev
 	app.use(passport.initialize());
