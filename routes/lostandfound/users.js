@@ -17,6 +17,9 @@ module.exports.findById = function(req,res){
 
 	User.findOne({'_id':_id}, function(err, users){
 
+		console.log("Error ", err);
+		console.log("Users ", users);
+
 		if(!users)
 			res.send(404);
 
