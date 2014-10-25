@@ -15,6 +15,8 @@ module.exports.findPaged = function(req,res){
 module.exports.findById = function(req,res){
 	var _id = req.params.id;
 
+	console.log("Buscando usuario:", _id);
+
 	User.findOne({'_id':_id}, function(err, users){
 
 		console.log("Error ", err);
