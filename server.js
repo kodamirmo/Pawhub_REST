@@ -64,6 +64,7 @@ app.get("/lnf/reports/:id", reports.findById);
 app.post("/lnf/reports", reports.add);
 app.put("/lnf/reports", reports.update);
 app.delete("/lnf/reports/:id", reports.delete);
+app.post("/lnf/reports/populate", reports.populateReports);
 
 app.post("/lnf/reports/setalert/:id", reports.setAlert);
 app.post("/lnf/reports/comment/:id", reports.comment);
