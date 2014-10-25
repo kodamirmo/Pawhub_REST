@@ -16,6 +16,10 @@ module.exports.findById = function(req,res){
 	var _id = req.params.id;
 
 	User.findOne({'_id':_id}, function(err, users){
+
+		if(!users)
+			res.send(404);
+
 		res.send(users);
 	});
 };
